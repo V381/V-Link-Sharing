@@ -1,0 +1,6 @@
+{:aliases
+ {:fig {:extra-deps {com.bhauman/figwheel-main {:mvn/version "0.2.10"}}
+        :main-opts  ["-m" "figwheel.main" "-b" "dev" "-r"]}}}
+
+{:deps {reagent {:mvn/version "0.2.10"}}}
+{:deps {reagent {:mvn/version "0.2.10"} react-dom {:mvn/version "0.2.10"}}}
