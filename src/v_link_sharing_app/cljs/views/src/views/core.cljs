@@ -1,17 +1,27 @@
-(ns views.core
-    (:require ))
+(ns views.core)
 
 (enable-console-print!)
+(defn remove-class [element class-name]
+  (let [elem (.-classList element)]
+    (.remove elem class-name)))
 
-(println "This text is printed from src/views/core.cljs. Go ahead and edit it and see reloading in action. Joj")
+(defn show-register-form [_]
+  (let [login-form (.querySelector js/document ".login")
+        register-form (.querySelector js/document ".register-form")
+        register-text (.querySelector js/document ".register-text")]
+    (aset login-form "className" (str (.-className login-form) " hidden")) 
+    (aset register-text "className" (str (.-className register-text) " hidden"))
+    (when register-form
+      (remove-class register-form "hidden"))))
 
-;; define your app data so that it doesn't get over-written on reload
+(defn jareMoje []
+  (println "Hello World"))
 
-(defonce app-state (atom {:text "Hello world!"}))
+(defn mount-root []
+  (let [button (.querySelector js/document ".register")]
+    (.addEventListener button "click" show-register-form)))
 
+(println "Click event example")
 
-(defn on-js-reload []
-  ;; optionally touch your app-state to force rerendering depending on
-  ;; your application
-  ;; (swap! app-state update-in [:__figwheel_counter] inc)
-)
+(mount-root)
+
