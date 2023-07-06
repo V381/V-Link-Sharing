@@ -16,28 +16,40 @@
       <main class="bg-cover bg-center h-screen register" style="background-image: url('assets/bg.jpg')">
         <div class="flex justify-center items-center h-screen">
           <div class="bg-slate-900 p-20 rounded-lg">
-            <form id="login" class="login">
-              <label>
-                <p class="text-white mb-5">Username:</p>
-                <input type="text" placeholder="Enter username...." class="mb-5 p-5 rounded-md italic">
-              </label>
-              <br>
-              <label>
-                <p class="text-white mb-5">Password:</p>
-                <input type="password" placeholder="Enter password...." class="p-5 rounded-md italic">
-              </label>
-              <br>
-              <button class="bg-blue-700 hover:bg-blue-800 text-white p-5 w-full mt-10">Submit</button>
-            </form>
-            <br>
-            <p class="text-white register-text">Not registered? <a href="#" class="text-blue-400">Click here</a></p>
-            <form id="register-form" class="register-form hidden">
+            <div id="register-form" class="guest-form">
               <button class="bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded w-full">
                 <i class="fab fa-github mr-2"></i>
                 Register with GitHub
               </button>          
-            </form>
-          </div>
+              <button class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded w-full mt-5 guest">
+                <i class="fas fa-link"></i>
+                Try without registration
+              </button>
+            </div>
+            <div class="hidden create-links">
+              <h2 class="text-white text-lg">Customize your links</h2>
+              <p class="text-gray-200 mb-5">Add/edit/remove links below and then all your profiles with the world!</p>
+              <button class="bg-blue-600 mb-5 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded w-full mt-5 guest">
+                + Add new link
+              </button>
+              <!-- <div class="border border-slate-300 rounded-md relative">
+                <input type="text" name="text" placeholder="Enter link..." class="px-2 py-2 w-full border-0 focus:outline-0 pl-8" />
+                <i class="fas fa-link text-blue-500 absolute top-5 left-2 transform -translate-y-1/2"></i>
+              </div> -->
+              
+              <!-- <div class="flex items-center mt-2">
+                <span class="flex items-center justify-center h-8 w-8 rounded-l border border-gray-300 bg-gray-200">
+                  <i class="fas fa-link text-gray-500"></i>
+                </span>
+                <input type="text" class="border border-gray-300 rounded-r py-2 px-4 w-full" placeholder="Enter link...">
+              </div>
+              <div class="flex items-center mt-2">
+                <span class="flex items-center justify-center h-8 w-8 rounded-l border border-gray-300 bg-gray-200">
+                  <i class="fas fa-link text-gray-500"></i>
+                </span>
+                <input type="text" class="border border-gray-300 rounded-r py-2 px-4 w-full" placeholder="Enter link...">
+              </div> -->
+            </div>
         </div>
       </main> 
     </div>
