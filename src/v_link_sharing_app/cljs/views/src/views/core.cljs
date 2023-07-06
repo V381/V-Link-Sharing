@@ -52,10 +52,40 @@
     (remove-class! create-links-form "hidden"))
   (.preventDefault event))
 
+(defonce counter (atom 0))
+
+(defn add-new-link [_]
+  (let [create-links-form (js/document.querySelector ".create-links")
+        div (js/document.createElement "div")
+        input (js/document.createElement "input")
+        icon (js/document.createElement "i")
+        removeIcon (js/document.createElement "i")]
+    (.classList.add div "border" "border-slate-300" "rounded-md" "relative")
+    (.classList.add input "px-2" "py-2" "w-full" "border-0" "focus:outline-0" "pl-8")
+    (.classList.add icon "fas" "fa-link" "text-blue-500" "absolute" "top-5" "left-2" "transform" "-translate-y-1/2")
+    (.classList.add removeIcon "fas" "fa-times" "text-red-500" "absolute" "top-5" "right-2" "transform" "-translate-y-1/2" "cursor-pointer")
+    (.setAttribute input "type" "text")
+    (.setAttribute input "name" "text")
+    (.setAttribute input "placeholder" "Enter link...")
+    (.appendChild div input)
+    (.appendChild div icon)
+    (.appendChild div removeIcon)
+    (.appendChild create-links-form div)
+    (swap! counter inc)
+    (let [counter-element (js/document.querySelector ".counter")]
+      (set! (.-textContent counter-element) @counter)
+      (.addEventListener removeIcon "click" (fn [event]
+                                              (.removeChild div)
+                                              (swap! counter dec)
+                                              (set! (.-textContent counter-element) @counter))))))
+
 (defn mount-root []
-  (let [button (js/document.querySelector ".guest-form")]
-    (.addEventListener button "click" guest-feature)))
+  (let [button (js/document.querySelector ".guest-form")
+        add-new-link-button (js/document.querySelector ".add-new-link")]
+    (.addEventListener button "click" guest-feature)
+    (.addEventListener add-new-link-button "click" add-new-link)))
 
 (println "Click event example")
 
 (mount-root)
+
