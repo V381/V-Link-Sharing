@@ -118,6 +118,10 @@
   (doseq [button tabButtons]
     (.setAttribute button "aria-selected" "false"))
   (.setAttribute (.-currentTarget e) "aria-selected" "true")
+  (.classList.add (.-currentTarget e) "border-b-indigo-500", "p-5", "border-b-8", "transition" "ease-in-out" "delay-150")
+  (doseq [button tabButtons]
+    (when (not= button (.-currentTarget e))
+      (.classList.remove button "border-b-indigo-500", "p-5", "border-b-8", "duration-300", "transition")))
   (let [id (.-id (.-currentTarget e))
         currentTabPanel (some #(when (= (.getAttribute % "aria-labelledby") id) %) tabPanels)]
     (when currentTabPanel
@@ -125,10 +129,6 @@
 
 (doseq [button tabButtons]
   (.addEventListener button "click" tab-click-handler))
-
-(defn set-main-height []
-  (let [main (js/document.querySelector "#main")]
-    (set! (.-cssText (.style main)) "height: fit-content;")))
 
 (defn mount-root []
   (let [button (js/document.querySelector ".guest-form")
@@ -140,10 +140,7 @@
                                      (let [closestRemoveText (.closest target ".remove-text")]
                                        (when closestRemoveText
                                          (remove-link target)
-                                         (show-save-button)))))
-
-    ;; Calculate and set the height of the main element
-    (set-main-height)))
+                                         (show-save-button)))))))
 
 
 

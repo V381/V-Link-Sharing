@@ -668,10 +668,6 @@ video {
   display: none;
 }
 
-.h-96 {
-  height: 24rem;
-}
-
 .max-h-full {
   max-height: 100%;
 }
@@ -917,6 +913,18 @@ video {
   transition-duration: 150ms;
 }
 
+.delay-150 {
+  transition-delay: 150ms;
+}
+
+.duration-300 {
+  transition-duration: 300ms;
+}
+
+.ease-in-out {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 .h-fit-content {
   height: -moz-fit-content;
   height: fit-content;
@@ -924,6 +932,16 @@ video {
 
 .custom-h {
   height: 600px;
+}
+
+.custom-w {
+  width: 700px;
+}
+
+@media all and (max-width: 800px) {
+  .custom-w {
+    width: 100%;
+  }
 }
 
 .hover\:bg-blue-500:hover {
