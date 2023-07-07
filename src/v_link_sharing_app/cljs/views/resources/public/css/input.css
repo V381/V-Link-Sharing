@@ -2,3 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+.h-fit-content {
+    height: fit-content;
+  }
+
+.custom-h {
+    height: 600px;
+}

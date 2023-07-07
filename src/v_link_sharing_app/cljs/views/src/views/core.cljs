@@ -1,6 +1,7 @@
 (ns views.core
   (:require [clojure.string :as string]
-            [reagent.impl.input :as input]))
+            [reagent.impl.input :as input]
+            [clojure.browser.dom :as dom]))
 
 (enable-console-print!)
 
@@ -72,7 +73,7 @@
 
 
 (defn add-new-link [_]
-  (let [create-links-form (js/document.querySelector ".create-links")
+  (let [create-links-form (js/document.querySelector ".links")
         div (js/document.createElement "div")
         input (js/document.createElement "input")
         linkInput (js/document.createElement "input")
@@ -100,11 +101,34 @@
       (set! (.-textContent counter-element) @counter))))
 
 
+(enable-console-print!)
+
 (defn remove-link [node]
   (.remove (.-parentNode node))
   (swap! counter dec)
   (let [counter-element (js/document.querySelector ".counter")]
     (set! (.-textContent counter-element) @counter)))
+(def tablist (js/document.querySelector "[role=\"tablist\"]"))
+(def tabButtons (.-children tablist))
+(def tabPanels (-> tablist (.-parentElement) (.querySelectorAll "[role=\"tabpanel\"]")))
+
+(defn tab-click-handler [e]
+  (doseq [panel tabPanels]
+    (set! (.-hidden panel) true))
+  (doseq [button tabButtons]
+    (.setAttribute button "aria-selected" "false"))
+  (.setAttribute (.-currentTarget e) "aria-selected" "true")
+  (let [id (.-id (.-currentTarget e))
+        currentTabPanel (some #(when (= (.getAttribute % "aria-labelledby") id) %) tabPanels)]
+    (when currentTabPanel
+      (set! (.-hidden currentTabPanel) false))))
+
+(doseq [button tabButtons]
+  (.addEventListener button "click" tab-click-handler))
+
+(defn set-main-height []
+  (let [main (js/document.querySelector "#main")]
+    (set! (.-cssText (.style main)) "height: fit-content;")))
 
 (defn mount-root []
   (let [button (js/document.querySelector ".guest-form")
@@ -116,7 +140,16 @@
                                      (let [closestRemoveText (.closest target ".remove-text")]
                                        (when closestRemoveText
                                          (remove-link target)
-                                         (show-save-button)))))))
+                                         (show-save-button)))))
+
+    ;; Calculate and set the height of the main element
+    (set-main-height)))
+
+
+
+
+
+
 
 
 

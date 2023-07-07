@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="css/output.css" rel="stylesheet" type="text/css">
+    <link href="css/input.css" rel="stylesheet" type="text/css">
     <title>V Link Sharing</title>
     <link rel="icon" href="https://clojurescript.org/images/cljs-logo-icon-32.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
   </head>
   <body class="bg-white bg-cover bg-center min-h-screen flex w-full justify-center items-center max-w-full max-h-full absolute top-0 left-0" style="background-image: url('assets/bg.jpg')">
     <div id="app">
-      <main class="register h-500 max-h-500 overflow-y-auto">
+      <main id="main" class="register overflow-y-auto block custom-h">
         <div class="bg-slate-900 p-20 rounded-lg h-500">
           <div id="register-form" class="guest-form">
             <button class="bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded w-full">
@@ -22,19 +23,42 @@
               Try without registration
             </button>
           </div>
-          <div class="hidden create-links">
-            <h2 class="text-white text-lg">Customize your links</h2>
-            <p class="text-gray-200 mb-5">Add/edit/remove links below and then all your profiles with the world!</p>
-            <p class="text-white">Added links: <span class="counter"></span></p>
-            <button class="bg-blue-600 mb-5 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded w-full mt-5 guest add-new-link">
-              + Add new link
-            </button>
-          </div>
-          <button class="bg-blue-600 mb-5 hidden hover:bg-blue-500 text-white font-bold py-2 px-4 rounded w-full mt-5 guest save-links">
-            Save links
-          </button>
+          <div class="hidden create-links max-h-500 overflow-y-auto">
+            <div class="wrapper text-white">
+              <div class="tabs w-full">
+                <div role="tablist" aria-label="Programming Languages">
+                  <button role="tab" aria-selected="true" id="js" class="border-b-indigo-500 p-5 border-b-8">
+                    Add Links
+                  </button>
+                  <button role="tab" aria-selected="false" id="ruby">Saved links
+                  </button>
+                  <!-- <button role="tab" aria-selected="false" id="php">
+                    PHP
+                  </button> -->
+                </div>
+                <div role="tabpanel" aria-labelledby="js" class="links">
+                  <h2 class="text-white text-lg">Customize your links</h2>
+                  <p class="text-gray-200 mb-5">Add/edit/remove links below and then all your profiles with the world!</p>
+                  <p class="text-white">Added links: <span class="counter"></span></p>
+                  <button class="bg-blue-600 mb-5 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded w-full mt-5 guest add-new-link">
+                    + Add new link
+                  </button>
+                  <button class="bg-blue-600 mb-5 hidden hover:bg-blue-500 text-white font-bold py-2 px-4 rounded w-full mt-5 guest save-links">
+                    Save links
+                  </button>
+                </div>
+                </div>
+                <div role="tabpanel" aria-labelledby="ruby" hidden>
+                  <p>Ruby is great</p>
+                </div>
+                <!-- <div role="tabpanel" aria-labelledby="php" hidden>
+                  <p>PHP is great!</p>
+                </div> -->
+              </div>
+            </div>
         </div>
       </main> 
+      
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
     <script src="js/compiled/out/goog/base.js"></script>
