@@ -1,6 +1,7 @@
 (ns views.core
   (:require [clojure.string :as string]
-            [reagent.impl.input :as input]))
+            [reagent.impl.input :as input]
+            [clojure.browser.dom :as dom]))
 
 (enable-console-print!)
 
@@ -45,12 +46,16 @@
   [e class1 class2]
   (let [toggle-map {(keyword class1) (keyword class2), (keyword class2) (keyword class1)}]
     (class-swap! e #(replace toggle-map %))))
+(defn show-save-button []
+  (let [save-button (js/document.querySelector ".save-links")]
+    (.classList.remove save-button "hidden")))
 
 (defn guest-feature [event]
   (let [guest-form (js/document.querySelector ".guest-form")
         create-links-form (js/document.querySelector ".create-links")]
     (set! (.-className guest-form) (str (.-className guest-form) " hidden"))
-    (remove-class! create-links-form "hidden"))
+    (remove-class! create-links-form "hidden")
+    (show-save-button))
   (.preventDefault event))
 
 (defonce counter (atom 0))
@@ -68,7 +73,7 @@
 
 
 (defn add-new-link [_]
-  (let [create-links-form (js/document.querySelector ".create-links")
+  (let [create-links-form (js/document.querySelector ".links")
         div (js/document.createElement "div")
         input (js/document.createElement "input")
         linkInput (js/document.createElement "input")
@@ -96,11 +101,34 @@
       (set! (.-textContent counter-element) @counter))))
 
 
+(enable-console-print!)
+
 (defn remove-link [node]
   (.remove (.-parentNode node))
   (swap! counter dec)
   (let [counter-element (js/document.querySelector ".counter")]
     (set! (.-textContent counter-element) @counter)))
+(def tablist (js/document.querySelector "[role=\"tablist\"]"))
+(def tabButtons (.-children tablist))
+(def tabPanels (-> tablist (.-parentElement) (.querySelectorAll "[role=\"tabpanel\"]")))
+
+(defn tab-click-handler [e]
+  (doseq [panel tabPanels]
+    (set! (.-hidden panel) true))
+  (doseq [button tabButtons]
+    (.setAttribute button "aria-selected" "false"))
+  (.setAttribute (.-currentTarget e) "aria-selected" "true")
+  (.classList.add (.-currentTarget e) "border-b-indigo-500", "p-5", "border-b-8", "transition" "ease-in-out" "delay-150")
+  (doseq [button tabButtons]
+    (when (not= button (.-currentTarget e))
+      (.classList.remove button "border-b-indigo-500", "p-5", "border-b-8", "duration-300", "transition")))
+  (let [id (.-id (.-currentTarget e))
+        currentTabPanel (some #(when (= (.getAttribute % "aria-labelledby") id) %) tabPanels)]
+    (when currentTabPanel
+      (set! (.-hidden currentTabPanel) false))))
+
+(doseq [button tabButtons]
+  (.addEventListener button "click" tab-click-handler))
 
 (defn mount-root []
   (let [button (js/document.querySelector ".guest-form")
@@ -111,7 +139,15 @@
                                   #(let [target (.-target %)]
                                      (let [closestRemoveText (.closest target ".remove-text")]
                                        (when closestRemoveText
-                                         (remove-link target)))))))
+                                         (remove-link target)
+                                         (show-save-button)))))))
+
+
+
+
+
+
+
 
 
 (println "Click event example")

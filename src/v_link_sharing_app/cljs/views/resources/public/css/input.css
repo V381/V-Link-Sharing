@@ -2,3 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+.h-fit-content {
+    height: fit-content;
+  }
+
+.custom-h {
+    height: 600px;
+}
+
+.custom-w {
+    width: 700px;
+}
+
+@media all and (max-width: 800px) {
+    .custom-w {
+        width: 100%;
+    }
+  }
