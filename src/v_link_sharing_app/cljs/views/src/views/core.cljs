@@ -45,12 +45,16 @@
   [e class1 class2]
   (let [toggle-map {(keyword class1) (keyword class2), (keyword class2) (keyword class1)}]
     (class-swap! e #(replace toggle-map %))))
+(defn show-save-button []
+  (let [save-button (js/document.querySelector ".save-links")]
+    (.classList.remove save-button "hidden")))
 
 (defn guest-feature [event]
   (let [guest-form (js/document.querySelector ".guest-form")
         create-links-form (js/document.querySelector ".create-links")]
     (set! (.-className guest-form) (str (.-className guest-form) " hidden"))
-    (remove-class! create-links-form "hidden"))
+    (remove-class! create-links-form "hidden")
+    (show-save-button))
   (.preventDefault event))
 
 (defonce counter (atom 0))
@@ -111,7 +115,9 @@
                                   #(let [target (.-target %)]
                                      (let [closestRemoveText (.closest target ".remove-text")]
                                        (when closestRemoveText
-                                         (remove-link target)))))))
+                                         (remove-link target)
+                                         (show-save-button)))))))
+
 
 
 (println "Click event example")
