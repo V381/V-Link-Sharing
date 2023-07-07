@@ -80,9 +80,11 @@
         icon (js/document.createElement "i")
         removeText (js/document.createElement "p")]
     (.classList.add div "card" "bg-gray-700" "rounded-md" "relative" "pb-8" "mb-5" "flex" "flex-col")
-    (.classList.add linkInput "input-field" "px-2" "py-2" "w-full" "border-0" "focus:outline-0" "pl-8" "mb-3" "flex-1")
-    (.classList.add input "input-field" "px-2" "py-2" "w-full" "border-0" "focus:outline-0" "pl-8" "flex-1")
+    (.classList.add linkInput "input-field" "px-2" "py-2" "w-full" "border-0" "focus:outline-0" "pl-8" "mb-3" "flex-1" "text-blue-500" "italic")
+    (.classList.add input "input-field" "px-2" "py-2" "w-full" "border-0" "focus:outline-0" "pl-8" "flex-1" "text-black")
     (.classList.add icon "fa" "fa-link" "text-blue-500" "absolute" "top-12" "left-2" "transform" "-translate-y-1/2")
+    (.classList.remove input "text-white")
+    (.classList.remove linkInput "text-white")
     (.classList.add removeText "remove-text" "text-xs" "cursor-pointer" "text-white" "text-end" "px-2" "py-2" "hover:text-red-500")
     (.setAttribute input "type" "text")
     (.setAttribute input "name" "text")
@@ -108,9 +110,15 @@
   (swap! counter dec)
   (let [counter-element (js/document.querySelector ".counter")]
     (set! (.-textContent counter-element) @counter)))
+
+
 (def tablist (js/document.querySelector "[role=\"tablist\"]"))
 (def tabButtons (.-children tablist))
 (def tabPanels (-> tablist (.-parentElement) (.querySelectorAll "[role=\"tabpanel\"]")))
+(def saveLinks (js/document.querySelector ".save-links"))
+
+(defn saveLinksLogic [e]
+  (println e))
 
 (defn tab-click-handler [e]
   (doseq [panel tabPanels]
@@ -130,6 +138,32 @@
 (doseq [button tabButtons]
   (.addEventListener button "click" tab-click-handler))
 
+(defn handleLinkCardClick [event]
+  (let [target (.-target event)
+        linkCard (.-currentTarget event)]
+    (when (.contains linkCard target)
+      (let [cards (js/document.querySelectorAll ".card")
+            showLinks (js/document.querySelector ".show-links")]
+        ;; Clear existing links
+        (set! (.-textContent showLinks) "")
+        (doseq [card cards]
+          (doseq [child (.-children card)]
+            (when (and (= (.-tagName child) "INPUT")
+                       (instance? js/HTMLInputElement child))
+              (let [a (js/document.createElement "a")
+                    br (js/document.createElement "br")]
+                (set! (.-innerHTML a) (.-value child))
+                (.appendChild showLinks a)
+                (.appendChild showLinks br)
+                (.classList.add a "text-blue-500")))))))))
+
+(defn waitAndAccessElements []
+  (let [linkCardContainer (js/document.querySelectorAll ".card")]
+    (when linkCardContainer
+      (let [linkCardChildren (-> linkCardContainer js/Array.from)]
+        (.addEventListener (js/document.querySelector ".save-links") "click" handleLinkCardClick)
+        (println linkCardChildren)))))
+
 (defn mount-root []
   (let [button (js/document.querySelector ".guest-form")
         add-new-link-button (js/document.querySelector ".add-new-link")]
@@ -140,7 +174,9 @@
                                      (let [closestRemoveText (.closest target ".remove-text")]
                                        (when closestRemoveText
                                          (remove-link target)
-                                         (show-save-button)))))))
+                                         (show-save-button))))))
+
+  (js/document.addEventListener "DOMContentLoaded" waitAndAccessElements))
 
 
 
