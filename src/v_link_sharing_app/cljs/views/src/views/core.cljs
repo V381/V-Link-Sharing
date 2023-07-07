@@ -1,5 +1,6 @@
 (ns views.core
-  (:require [clojure.string :as string]))
+  (:require [clojure.string :as string]
+            [reagent.impl.input :as input]))
 
 (enable-console-print!)
 
@@ -54,38 +55,65 @@
 
 (defonce counter (atom 0))
 
+(defn remove-parent-node [node]
+  (-> node .-parentElement (.remove)))
+
+(defn remove-node [node]
+  (.. node -parentNode (removeChild node)))
+
+(defn remove-html-node [class]
+  (let [node (.. js/document querySelector class)]
+    (when node
+      (remove-node node))))
+
+
 (defn add-new-link [_]
   (let [create-links-form (js/document.querySelector ".create-links")
         div (js/document.createElement "div")
         input (js/document.createElement "input")
+        linkInput (js/document.createElement "input")
         icon (js/document.createElement "i")
-        removeIcon (js/document.createElement "i")]
-    (.classList.add div "border" "border-slate-300" "rounded-md" "relative")
-    (.classList.add input "px-2" "py-2" "w-full" "border-0" "focus:outline-0" "pl-8")
-    (.classList.add icon "fas" "fa-link" "text-blue-500" "absolute" "top-5" "left-2" "transform" "-translate-y-1/2")
-    (.classList.add removeIcon "fas" "fa-times" "text-red-500" "absolute" "top-5" "right-2" "transform" "-translate-y-1/2" "cursor-pointer")
+        removeText (js/document.createElement "p")]
+    (.classList.add div "card" "bg-gray-700" "rounded-md" "relative" "pb-8" "mb-5" "flex" "flex-col")
+    (.classList.add linkInput "input-field" "px-2" "py-2" "w-full" "border-0" "focus:outline-0" "pl-8" "mb-3" "flex-1")
+    (.classList.add input "input-field" "px-2" "py-2" "w-full" "border-0" "focus:outline-0" "pl-8" "flex-1")
+    (.classList.add icon "fa" "fa-link" "text-blue-500" "absolute" "top-12" "left-2" "transform" "-translate-y-1/2")
+    (.classList.add removeText "remove-text" "text-xs" "cursor-pointer" "text-white" "text-end" "px-2" "py-2" "hover:text-red-500")
     (.setAttribute input "type" "text")
     (.setAttribute input "name" "text")
-    (.setAttribute input "placeholder" "Enter link...")
+    (.setAttribute input "placeholder" "Enter platform...")
+    (.setAttribute linkInput "type" "text")
+    (.setAttribute linkInput "name" "link")
+    (.setAttribute linkInput "placeholder" "Enter link...")
+    (set! (.-innerHTML removeText) "Remove link")
+    (.appendChild div removeText)
+    (.appendChild div linkInput)
     (.appendChild div input)
     (.appendChild div icon)
-    (.appendChild div removeIcon)
     (.appendChild create-links-form div)
     (swap! counter inc)
     (let [counter-element (js/document.querySelector ".counter")]
-      (set! (.-textContent counter-element) @counter)
-      (.addEventListener removeIcon "click" (fn [event]
-                                              (.removeChild div)
-                                              (swap! counter dec)
-                                              (set! (.-textContent counter-element) @counter))))))
+      (set! (.-textContent counter-element) @counter))))
+
+
+(defn remove-link [node]
+  (.remove (.-parentNode node))
+  (swap! counter dec)
+  (let [counter-element (js/document.querySelector ".counter")]
+    (set! (.-textContent counter-element) @counter)))
 
 (defn mount-root []
   (let [button (js/document.querySelector ".guest-form")
         add-new-link-button (js/document.querySelector ".add-new-link")]
     (.addEventListener button "click" guest-feature)
-    (.addEventListener add-new-link-button "click" add-new-link)))
+    (.addEventListener add-new-link-button "click" #(add-new-link %))
+    (js/document.addEventListener "click"
+                                  #(let [target (.-target %)]
+                                     (let [closestRemoveText (.closest target ".remove-text")]
+                                       (when closestRemoveText
+                                         (remove-link target)))))))
+
 
 (println "Click event example")
 
 (mount-root)
-
